@@ -1,1 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Line Drawing Canvas (512x512)</title>
+</head>
+<body>
+  <canvas id="myCanvas" width="512" height="512"></canvas>
+  <script>
+    const canvas = document.getElementById("myCanvas");
+const ctx = canvas.getContext("2d");
+
+let isDrawing = false;
+let startCoords = null;
+
+// Set line properties (color, thickness etc.)
+ctx.strokeStyle = "black";
+ctx.lineWidth = 2;
+
+canvas.addEventListener("mousedown", (event) => {
+  isDrawing = true;
+  startCoords = { x: event.offsetX, y: event.offsetY };
+});
+
+canvas.addEventListener("mousemove", (event) => {
+  if (!isDrawing) return;
+
+  const endCoords = { x: event.offsetX, y: event.offsetY };
+
+  // Clear any previous line (optional)
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw the line between start and end coordinates
+  ctx.beginPath();
+  ctx.moveTo(startCoords.x, startCoords.y);
+  ctx.lineTo(endCoords.x, endCoords.y);
+  ctx.stroke();
+});
+
+canvas.addEventListener("mouseup", () => {
+  isDrawing = false;
+});
+
+  </script>
+</body>
+</html>
 
