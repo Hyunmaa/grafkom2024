@@ -1,46 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Line Drawing Canvas (512x512)</title>
+  <title>Menggambar Garis Lurus dengan DDA</title>
 </head>
 <body>
-  <canvas id="myCanvas" width="512" height="512"></canvas>
+  <canvas id="myCanvas" width="512" height="512" style="border: 1px solid black;"></canvas>
   <script>
     const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 
-let isDrawing = false;
-let startCoords = null;
+// Menambahkan event listener untuk click pada canvas
+canvas.addEventListener("click", (event) => {
+  // Mendapatkan koordinat click
+  const x1 = event.offsetX;
+  const y1 = event.offsetY;
 
-// Set line properties (color, thickness etc.)
-ctx.strokeStyle = "black";
-ctx.lineWidth = 2;
+  // Menentukan koordinat random untuk ujung garis
+  const x2 = Math.floor(Math.random() * canvas.width);
+  const y2 = Math.floor(Math.random() * canvas.height);
 
-canvas.addEventListener("mousedown", (event) => {
-  isDrawing = true;
-  startCoords = { x: event.offsetX, y: event.offsetY };
+  // Menggambar garis menggunakan DDA
+  drawDDALine(x1, y1, x2, y2);
 });
 
-canvas.addEventListener("mousemove", (event) => {
-  if (!isDrawing) return;
+function drawDDALine(x1, y1, x2, y2) {
+  // Menghitung delta x dan y
+  const dx = x2 - x1;
+  const dy = y2 - y1;
 
-  const endCoords = { x: event.offsetX, y: event.offsetY };
+  // Menghitung langkah
+  const steps = Math.abs(dx) > Math.abs(dy) ? Math.abs(dx) : Math.abs(dy);
 
-  // Clear any previous line (optional)
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // Menghitung increment x dan y
+  const xIncrement = dx / steps;
+  const yIncrement = dy / steps;
 
-  // Draw the line between start and end coordinates
+  // Menggambar garis
+  let x = x1;
+  let y = y1;
   ctx.beginPath();
-  ctx.moveTo(startCoords.x, startCoords.y);
-  ctx.lineTo(endCoords.x, endCoords.y);
+  ctx.moveTo(x, y);
+  for (let i = 0; i <= steps; i++) {
+    x += xIncrement;
+    y += yIncrement;
+    ctx.lineTo(x, y);
+  }
   ctx.stroke();
-});
-
-canvas.addEventListener("mouseup", () => {
-  isDrawing = false;
-});
-
+}
   </script>
 </body>
 </html>
-
