@@ -17,14 +17,8 @@
         document.addEventListener("DOMContentLoaded", function() {
             var canvas = document.getElementById("myCanvas");
             var ctx = canvas.getContext("2d");
-            var currentTriangle = null;
 
             canvas.addEventListener("click", function(event) {
-                // Hapus segitiga yang sebelumnya digambar
-                if (currentTriangle) {
-                    ctx.clearRect(currentTriangle.x, currentTriangle.y - 20, 220, 220);
-                }
-
                 var x = event.clientX - canvas.getBoundingClientRect().left;
                 var y = event.clientY - canvas.getBoundingClientRect().top;
 
@@ -33,6 +27,7 @@
 
             function drawRandomTriangle(x, y) {
                 var sideLength = 200;
+                var shapeType = Math.floor(Math.random() * 3); // 0: Sama Sisi, 1: Sama Kaki, 2: Sembarang
 
                 // Mendapatkan warna acak untuk gradasi
                 var color1 = getRandomColor();
@@ -45,24 +40,30 @@
                 gradient.addColorStop(0.5, color2);
                 gradient.addColorStop(1, color3);
 
-                // Menggambar segitiga dengan bentuk acak
+                // Menggambar segitiga berdasarkan tipe bentuk
                 ctx.beginPath();
-                ctx.moveTo(x, y);
-                for (var i = 0; i < 2; i++) {
-                    var angle = Math.random() * 2 * Math.PI;
-                    var length = sideLength * Math.random();
-                    var newX = x + Math.cos(angle) * length;
-                    var newY = y + Math.sin(angle) * length;
-                    ctx.lineTo(newX, newY);
+                if (shapeType === 0) {
+                    // Sama Sisi
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + sideLength, y);
+                    ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
+                } else if (shapeType === 1) {
+                    // Sama Kaki
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + sideLength, y);
+                    ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
+                    ctx.lineTo(x, y);
+                } else {
+                    // Sembarang
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + sideLength, y);
+                    ctx.lineTo(x + sideLength * Math.random(), y - Math.sqrt(3) / 2 * sideLength * Math.random());
                 }
                 ctx.closePath();
 
                 // Mengisi segitiga dengan gradasi
                 ctx.fillStyle = gradient;
                 ctx.fill();
-
-                // Menyimpan posisi segitiga yang baru digambar
-                currentTriangle = { x: x, y: y };
             }
 
             function getRandomColor() {
