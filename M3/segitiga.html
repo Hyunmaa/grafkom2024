@@ -22,62 +22,68 @@
     <input type="color" id="colorPicker3" class="color-picker" value="#0000ff">
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var canvas = document.getElementById("myCanvas");
-            var ctx = canvas.getContext("2d");
+        document.addEventListener("DOMContentLoaded", function () {
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
 
-            var colorPicker1 = document.getElementById("colorPicker1");
-            var colorPicker2 = document.getElementById("colorPicker2");
-            var colorPicker3 = document.getElementById("colorPicker3");
+    var colorPicker1 = document.getElementById("colorPicker1");
+    var colorPicker2 = document.getElementById("colorPicker2");
+    var colorPicker3 = document.getElementById("colorPicker3");
 
-            canvas.addEventListener("click", function(event) {
-                var x = event.clientX - canvas.getBoundingClientRect().left;
-                var y = event.clientY - canvas.getBoundingClientRect().top;
+    canvas.addEventListener("click", function (event) {
+        var x = event.clientX - canvas.getBoundingClientRect().left;
+        var y = event.clientY - canvas.getBoundingClientRect().top;
 
-                drawRandomTriangle(x, y);
-            });
+        clearCanvas(); // Menghapus segitiga sebelumnya
+        drawRandomTriangle(x, y);
+    });
 
-            function drawRandomTriangle(x, y) {
-                var sideLength = 200;
-                var shapeType = Math.floor(Math.random() * 3); // 0: Sama Sisi, 1: Sama Kaki, 2: Sembarang
+    function drawRandomTriangle(x, y) {
+        var sideLength = 200;
+        var shapeType = Math.floor(Math.random() * 3); // 0: Sama Sisi, 1: Sama Kaki, 2: Sembarang
 
-                // Mendapatkan warna dari color picker
-                var color1 = colorPicker1.value;
-                var color2 = colorPicker2.value;
-                var color3 = colorPicker3.value;
+        // Mendapatkan warna dari color picker
+        var color1 = colorPicker1.value;
+        var color2 = colorPicker2.value;
+        var color3 = colorPicker3.value;
 
-                // Membuat gradasi linear horizontal
-                var gradient = ctx.createLinearGradient(x, y, x + sideLength, y);
-                gradient.addColorStop(0, color1);
-                gradient.addColorStop(0.5, color2);
-                gradient.addColorStop(1, color3);
+        // Membuat gradasi linear horizontal
+        var gradient = ctx.createLinearGradient(x, y, x + sideLength, y);
+        gradient.addColorStop(0, color1);
+        gradient.addColorStop(0.5, color2);
+        gradient.addColorStop(1, color3);
 
-                // Menggambar segitiga berdasarkan tipe bentuk
-                ctx.beginPath();
-                if (shapeType === 0) {
-                    // Sama Sisi
-                    ctx.moveTo(x, y);
-                    ctx.lineTo(x + sideLength, y);
-                    ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
-                } else if (shapeType === 1) {
-                    // Sama Kaki
-                    ctx.moveTo(x, y);
-                    ctx.lineTo(x + sideLength, y);
-                    ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
-                    ctx.lineTo(x, y);
-                } else {
-                    // Sembarang
-                    ctx.moveTo(x, y);
-                    ctx.lineTo(x + sideLength, y);
-                    ctx.lineTo(x + sideLength * Math.random(), y - Math.sqrt(3) / 2 * sideLength * Math.random());
-                }
-                ctx.closePath();
+        // Menggambar segitiga berdasarkan tipe bentuk
+        ctx.beginPath();
+        if (shapeType === 0) {
+            // Sama Sisi
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + sideLength, y);
+            ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
+        } else if (shapeType === 1) {
+            // Sama Kaki
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + sideLength, y);
+            ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
+            ctx.lineTo(x, y);
+        } else {
+            // Sembarang
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + sideLength, y);
+            ctx.lineTo(x + sideLength * Math.random(), y - Math.sqrt(3) / 2 * sideLength * Math.random());
+        }
+        ctx.closePath();
 
-                // Mengisi segitiga dengan gradasi
-                ctx.fillStyle = gradient;
-                ctx.fill();
-            }
-        });
+        // Mengisi segitiga dengan gradasi
+        ctx.fillStyle = gradient;
+        ctx.fill();
+    }
+
+    function clearCanvas() {
+        // Menghapus seluruh area canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+});
     </script>
 </body>
 </html>
