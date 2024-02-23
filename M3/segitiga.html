@@ -1,128 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Random Gradient Triangle</title>
-  <style>
-    canvas {
-      border: 2px solid #000;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Segitiga</title>
+    <style>
+        canvas {
+            border: 1px solid #000;
+        }
+    </style>
 </head>
 <body>
+    <canvas id="myCanvas" width="500" height="500"></canvas>
 
-<canvas id="myCanvas" width="500" height="500"></canvas>
-<br>
-<label for="colorPicker1">p1:</label>
-<input type="color" id="colorPicker1" value="#ff0000">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext("2d");
 
-<label for="colorPicker2">p2:</label>
-<input type="color" id="colorPicker2" value="#00ff00">
+            canvas.addEventListener("click", function(event) {
+                var x = event.clientX - canvas.getBoundingClientRect().left;
+                var y = event.clientY - canvas.getBoundingClientRect().top;
 
-<label for="colorPicker3">p3:</label>
-<input type="color" id="colorPicker3" value="#0000ff">
+                drawTriangle(x, y);
+            });
 
-<script>
-  // Mengambil elemen canvas dan color picker
-  var canvas = document.getElementById("myCanvas");
-  var ctx = canvas.getContext("2d");
-  var colorPicker1 = document.getElementById("colorPicker1");
-  var colorPicker2 = document.getElementById("colorPicker2");
-  var colorPicker3 = document.getElementById("colorPicker3");
+            function drawTriangle(x, y) {
+                var sideLength = 200;
 
-  // Event listener saat canvas diklik
-  canvas.addEventListener("click", function (e) {
-    var p1Color = colorPicker1.value;
-    var p2Color = colorPicker2.value;
-    var p3Color = colorPicker3.value;
+                // Mendapatkan warna acak untuk gradasi
+                var color1 = getRandomColor();
+                var color2 = getRandomColor();
+                var color3 = getRandomColor();
 
-    var triangle = createRandomGradientTriangle(
-      e.clientX - canvas.offsetLeft,
-      e.clientY - canvas.offsetTop,
-      p1Color,
-      p2Color,
-      p3Color
-    );
+                // Membuat gradasi linear horizontal
+                var gradient = ctx.createLinearGradient(x, y, x + sideLength, y);
+                gradient.addColorStop(0, color1);
+                gradient.addColorStop(0.5, color2);
+                gradient.addColorStop(1, color3);
 
-    drawTriangle(triangle);
-  });
+                // Menggambar segitiga
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x + sideLength, y);
+                ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
+                ctx.closePath();
 
-  // Membuat segitiga dengan ukuran 200x200 dan gradasi warna random pada ketiga ujungnya
-  function createRandomGradientTriangle(x, y, p1Color, p2Color, p3Color) {
-    var triangle = [];
+                // Mengisi segitiga dengan gradasi
+                ctx.fillStyle = gradient;
+                ctx.fill();
+            }
 
-    // Titik-titik segitiga
-    var p1 = { x: 0, y: 500, color: getRandomColor() };
-    var p2 = { x: 250, y: 0, color: getRandomColor() };
-    var p3 = { x: 500, y: 500, color: getRandomColor() };
-
-    // Interpolasi warna antara warna titik dan warna dari color picker
-    p1.color = interpolateColor(p1Color, p1.color, 0.5, 0.5);
-    p2.color = interpolateColor(p2Color, p2.color, 0.5, 0.5);
-    p3.color = interpolateColor(p3Color, p3.color, 0.5, 0.5);
-
-    for (var i = 0; i <= 1; i += 0.01) {
-      var a = interpolate(p1, p2, i);
-      var b = interpolate(p2, p3, i);
-      var c = interpolate(p1, p3, i);
-
-      for (var j = 0; j <= 1 - i; j += 0.01) {
-        var point = interpolate(a, b, j);
-        triangle.push({ x: x + point.x, y: y + point.y, color: interpolateColor(p1.color, p2.color, p3.color, i, j) });
-      }
-    }
-
-    return triangle;
-  }
-
-  // Interpolasi linear antara dua titik
-  function interpolate(point1, point2, t) {
-    return {
-      x: (1 - t) * point1.x + t * point2.x,
-      y: (1 - t) * point1.y + t * point2.y
-    };
-  }
-
-  // Interpolasi warna antara dua warna
-  function interpolateColor(color1, color2, t1, t2) {
-    var r1 = parseInt(color1.substring(1, 3), 16);
-    var g1 = parseInt(color1.substring(3, 5), 16);
-    var b1 = parseInt(color1.substring(5, 7), 16);
-
-    var r2 = parseInt(color2.substring(1, 3), 16);
-    var g2 = parseInt(color2.substring(3, 5), 16);
-    var b2 = parseInt(color2.substring(5, 7), 16);
-
-    var r = Math.round((1 - t1 - t2) * r1 + t1 * r2 + t2 * 128); // 128 untuk mendapatkan warna yang lebih netral
-    var g = Math.round((1 - t1 - t2) * g1 + t1 * g2 + t2 * 128);
-    var b = Math.round((1 - t1 - t2) * b1 + t1 * b2 + t2 * 128);
-
-    return '#' + (r < 16 ? '0' : '') + r.toString(16) +
-           (g < 16 ? '0' : '') + g.toString(16) +
-           (b < 16 ? '0' : '') + b.toString(16);
-  }
-
-  // Menghasilkan warna acak dalam format RGB
-  function getRandomColor() {
-    var letters = "0123456789ABCDEF";
-    var color = "#";
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  }
-
-  // Menggambar segitiga
-  function drawTriangle(triangle) {
-    triangle.forEach(function (point) {
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, 1, 0, 2 * Math.PI);
-      ctx.fillStyle = point.color;
-      ctx.fill();
-    });
-  }
-</script>
-
+            function getRandomColor() {
+                var letters = "0123456789ABCDEF";
+                var color = "#";
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+        });
+    </script>
 </body>
 </html>
