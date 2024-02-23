@@ -50,14 +50,14 @@
     });
   }
 
-  // Membuat segitiga dengan titik-titik dan warna acak
+  // Membuat segitiga dengan titik-titik dan warna acak (ukuran minimal 100x100)
   function createRandomTriangle(x, y) {
     var triangle = [];
 
     for (var i = 0; i < 3; i++) {
       triangle.push({
-        x: x + Math.random() * 50, // Ukuran segitiga bervariasi
-        y: y + Math.random() * 50,
+        x: x + Math.random() * 50 + 50, // Ukuran segitiga minimal 100x100
+        y: y + Math.random() * 50 + 50,
       });
     }
 
