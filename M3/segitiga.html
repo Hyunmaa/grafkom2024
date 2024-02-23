@@ -21,8 +21,8 @@
 
   var triangles = []; // Array untuk menyimpan segitiga-segitiga yang sudah digambar
 
-  // Event listener saat mouse ditekan
-  canvas.addEventListener("mousedown", function (e) {
+  // Event listener saat canvas diklik
+  canvas.addEventListener("click", function (e) {
     var triangle = createRandomTriangle(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
     triangles.push(triangle);
     drawAllTriangles();
