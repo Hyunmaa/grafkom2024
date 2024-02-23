@@ -24,7 +24,10 @@
   // Event listener saat canvas diklik
   canvas.addEventListener("click", function (e) {
     var triangle = createRandomTriangle(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
-    triangles.push(triangle);
+    triangles.push({
+      points: triangle,
+      color: getRandomColor()
+    });
     drawAllTriangles();
   });
 
@@ -35,13 +38,13 @@
     triangles.forEach(function (triangle) {
       // Menggambar segitiga
       ctx.beginPath();
-      ctx.moveTo(triangle[0].x, triangle[0].y);
-      ctx.lineTo(triangle[1].x, triangle[1].y);
-      ctx.lineTo(triangle[2].x, triangle[2].y);
+      ctx.moveTo(triangle.points[0].x, triangle.points[0].y);
+      ctx.lineTo(triangle.points[1].x, triangle.points[1].y);
+      ctx.lineTo(triangle.points[2].x, triangle.points[2].y);
       ctx.closePath();
 
-      // Memberikan warna acak dan menggambar segitiga
-      ctx.fillStyle = getRandomColor();
+      // Memberikan warna dan menggambar segitiga
+      ctx.fillStyle = triangle.color;
       ctx.fill();
       ctx.stroke();
     });
