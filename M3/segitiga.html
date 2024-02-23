@@ -1,1 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Segitiga dengan Canvas (Mouse Press)</title>
+  <style>
+    canvas {
+      border: 1px solid #000;
+    }
+  </style>
+</head>
+<body>
 
+<canvas id="myCanvas" width="500" height="500"></canvas>
+
+<script>
+  // Mengambil elemen canvas
+  var canvas = document.getElementById("myCanvas");
+  var ctx = canvas.getContext("2d");
+
+  var isDrawing = false;
+  var trianglePoints = [];
+
+  // Event listener saat mouse ditekan
+  canvas.addEventListener("mousedown", function (e) {
+    isDrawing = true;
+    trianglePoints = []; // Reset titik-titik segitiga
+    addPoint(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+  });
+
+  // Event listener saat mouse bergerak
+  canvas.addEventListener("mousemove", function (e) {
+    if (isDrawing) {
+      addPoint(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+      drawTriangle();
+    }
+  });
+
+  // Event listener saat mouse dilepas
+  canvas.addEventListener("mouseup", function () {
+    isDrawing = false;
+  });
+
+  // Menggambar segitiga
+  function drawTriangle() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Menghapus gambar sebelumnya
+
+    // Menggambar garis segitiga
+    ctx.beginPath();
+    ctx.moveTo(trianglePoints[0].x, trianglePoints[0].y);
+    ctx.lineTo(trianglePoints[1].x, trianglePoints[1].y);
+    ctx.lineTo(trianglePoints[2].x, trianglePoints[2].y);
+    ctx.closePath();
+
+    // Memberikan warna acak dan menggambar segitiga
+    ctx.fillStyle = getRandomColor();
+    ctx.fill();
+    ctx.stroke();
+  }
+
+  // Menambahkan titik pada array titik segitiga
+  function addPoint(x, y) {
+    trianglePoints.push({ x: x, y: y });
+
+    // Jika sudah ada 3 titik (segitiga terbentuk), berhenti menambahkan titik
+    if (trianglePoints.length === 3) {
+      isDrawing = false;
+    }
+  }
+
+  // Menghasilkan warna acak
+  function getRandomColor() {
+    var letters = "0123456789ABCDEF";
+    var color = "#";
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+</script>
+
+</body>
+</html>
