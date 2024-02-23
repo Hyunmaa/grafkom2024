@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canvas Segitiga</title>
+    <title>Canvas Segitiga Random</title>
     <style>
         canvas {
             border: 1px solid #000;
@@ -22,11 +22,12 @@
                 var x = event.clientX - canvas.getBoundingClientRect().left;
                 var y = event.clientY - canvas.getBoundingClientRect().top;
 
-                drawTriangle(x, y);
+                drawRandomTriangle(x, y);
             });
 
-            function drawTriangle(x, y) {
+            function drawRandomTriangle(x, y) {
                 var sideLength = 200;
+                var shapeType = Math.floor(Math.random() * 3); // 0: Sama Sisi, 1: Sama Kaki, 2: Sembarang
 
                 // Mendapatkan warna acak untuk gradasi
                 var color1 = getRandomColor();
@@ -39,11 +40,25 @@
                 gradient.addColorStop(0.5, color2);
                 gradient.addColorStop(1, color3);
 
-                // Menggambar segitiga
+                // Menggambar segitiga berdasarkan tipe bentuk
                 ctx.beginPath();
-                ctx.moveTo(x, y);
-                ctx.lineTo(x + sideLength, y);
-                ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
+                if (shapeType === 0) {
+                    // Sama Sisi
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + sideLength, y);
+                    ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
+                } else if (shapeType === 1) {
+                    // Sama Kaki
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + sideLength, y);
+                    ctx.lineTo(x + sideLength / 2, y - Math.sqrt(3) / 2 * sideLength);
+                    ctx.lineTo(x, y);
+                } else {
+                    // Sembarang
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + sideLength, y);
+                    ctx.lineTo(x + sideLength * Math.random(), y - Math.sqrt(3) / 2 * sideLength * Math.random());
+                }
                 ctx.closePath();
 
                 // Mengisi segitiga dengan gradasi
