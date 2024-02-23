@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Segitiga dengan Canvas (Mouse Press)</title>
+  <title>Segitiga dengan Canvas (Random Color)</title>
   <style>
     canvas {
-      border: 1px solid #000;
+      border: 2px solid #000;
     }
   </style>
 </head>
@@ -19,57 +19,49 @@
   var canvas = document.getElementById("myCanvas");
   var ctx = canvas.getContext("2d");
 
-  var isDrawing = false;
-  var trianglePoints = [];
+  var triangles = []; // Array untuk menyimpan segitiga-segitiga yang sudah digambar
 
   // Event listener saat mouse ditekan
   canvas.addEventListener("mousedown", function (e) {
-    isDrawing = true;
-    trianglePoints = []; // Reset titik-titik segitiga
-    addPoint(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    var triangle = createRandomTriangle(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+    triangles.push(triangle);
+    drawAllTriangles();
   });
 
-  // Event listener saat mouse bergerak
-  canvas.addEventListener("mousemove", function (e) {
-    if (isDrawing) {
-      addPoint(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
-      drawTriangle();
-    }
-  });
-
-  // Event listener saat mouse dilepas
-  canvas.addEventListener("mouseup", function () {
-    isDrawing = false;
-  });
-
-  // Menggambar segitiga
-  function drawTriangle() {
+  // Menggambar semua segitiga yang sudah disimpan
+  function drawAllTriangles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Menghapus gambar sebelumnya
 
-    // Menggambar garis segitiga
-    ctx.beginPath();
-    ctx.moveTo(trianglePoints[0].x, trianglePoints[0].y);
-    ctx.lineTo(trianglePoints[1].x, trianglePoints[1].y);
-    ctx.lineTo(trianglePoints[2].x, trianglePoints[2].y);
-    ctx.closePath();
+    triangles.forEach(function (triangle) {
+      // Menggambar segitiga
+      ctx.beginPath();
+      ctx.moveTo(triangle[0].x, triangle[0].y);
+      ctx.lineTo(triangle[1].x, triangle[1].y);
+      ctx.lineTo(triangle[2].x, triangle[2].y);
+      ctx.closePath();
 
-    // Memberikan warna acak dan menggambar segitiga
-    ctx.fillStyle = getRandomColor();
-    ctx.fill();
-    ctx.stroke();
+      // Memberikan warna acak dan menggambar segitiga
+      ctx.fillStyle = getRandomColor();
+      ctx.fill();
+      ctx.stroke();
+    });
   }
 
-  // Menambahkan titik pada array titik segitiga
-  function addPoint(x, y) {
-    trianglePoints.push({ x: x, y: y });
+  // Membuat segitiga dengan titik-titik dan warna acak
+  function createRandomTriangle(x, y) {
+    var triangle = [];
 
-    // Jika sudah ada 3 titik (segitiga terbentuk), berhenti menambahkan titik
-    if (trianglePoints.length === 3) {
-      isDrawing = false;
+    for (var i = 0; i < 3; i++) {
+      triangle.push({
+        x: x + Math.random() * 50, // Ukuran segitiga bervariasi
+        y: y + Math.random() * 50,
+      });
     }
+
+    return triangle;
   }
 
-  // Menghasilkan warna acak
+  // Menghasilkan warna acak dalam format RGB
   function getRandomColor() {
     var letters = "0123456789ABCDEF";
     var color = "#";
