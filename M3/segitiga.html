@@ -8,15 +8,27 @@
         canvas {
             border: 1px solid #000;
         }
+
+        .color-picker {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <canvas id="myCanvas" width="500" height="500"></canvas>
 
+    <input type="color" id="colorPicker1" class="color-picker" value="#ff0000">
+    <input type="color" id="colorPicker2" class="color-picker" value="#00ff00">
+    <input type="color" id="colorPicker3" class="color-picker" value="#0000ff">
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             var canvas = document.getElementById("myCanvas");
             var ctx = canvas.getContext("2d");
+
+            var colorPicker1 = document.getElementById("colorPicker1");
+            var colorPicker2 = document.getElementById("colorPicker2");
+            var colorPicker3 = document.getElementById("colorPicker3");
 
             canvas.addEventListener("click", function(event) {
                 var x = event.clientX - canvas.getBoundingClientRect().left;
@@ -29,10 +41,10 @@
                 var sideLength = 200;
                 var shapeType = Math.floor(Math.random() * 3); // 0: Sama Sisi, 1: Sama Kaki, 2: Sembarang
 
-                // Mendapatkan warna acak untuk gradasi
-                var color1 = getRandomColor();
-                var color2 = getRandomColor();
-                var color3 = getRandomColor();
+                // Mendapatkan warna dari color picker
+                var color1 = colorPicker1.value;
+                var color2 = colorPicker2.value;
+                var color3 = colorPicker3.value;
 
                 // Membuat gradasi linear horizontal
                 var gradient = ctx.createLinearGradient(x, y, x + sideLength, y);
@@ -64,15 +76,6 @@
                 // Mengisi segitiga dengan gradasi
                 ctx.fillStyle = gradient;
                 ctx.fill();
-            }
-
-            function getRandomColor() {
-                var letters = "0123456789ABCDEF";
-                var color = "#";
-                for (var i = 0; i < 6; i++) {
-                    color += letters[Math.floor(Math.random() * 16)];
-                }
-                return color;
             }
         });
     </script>
