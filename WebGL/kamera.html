@@ -30,17 +30,21 @@
     gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, `#version 300 es
       precision mediump float;
       in vec3 aPosition;
+      in vec3 aColor; // Menambahkan atribut warna
+      out vec3 vColor; // Melewatkan nilai warna ke fragment shader
       uniform mat4 uModelViewMatrix;
       uniform mat4 uProjectionMatrix;
       void main() {
         gl_Position = uProjectionMatrix * uModelViewMatrix * vec4(aPosition, 1.0);
+        vColor = aColor; // Melewatkan warna ke fragment shader
       }
     `));
     gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, `#version 300 es
       precision mediump float;
+      in vec3 vColor; // Menerima warna dari vertex shader
       out vec4 fragColor;
       void main() {
-        fragColor = vec4(1.0, 0.0, 0.0, 1.0); // Red color
+        fragColor = vec4(vColor, 1.0); // Menggunakan warna dari vertex shader
       }
     `));
     gl.linkProgram(program);
@@ -50,47 +54,88 @@
     var vbo = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
     var vertices = new Float32Array([
-      -2, -2, -2,
-       2, -2, -2,
-       2,  2, -2,
-      -2,  2, -2,
-      -2, -2,  2,
-       2, -2,  2,
-       2,  2,  2,
-      -2,  2,  2
+      // Vertices
+      -2, -2, -2, // 0
+       2, -2, -2, // 1
+       2,  2, -2, // 2
+      -2,  2, -2, // 3
+      -2, -2,  2, // 4
+       2, -2,  2, // 5
+       2,  2,  2, // 6
+      -2,  2,  2  // 7
     ]);
     gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+
+    // Create a color buffer object (CBO) for the cube
+    var cbo = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, cbo);
+    var colors = new Float32Array([
+      // Colors
+      1, 0, 0, // Red
+      0, 1, 0, // Green
+      0, 0, 1, // Blue
+      1, 1, 0, // Yellow
+      1, 0, 1, // Magenta
+      0, 1, 1  // Cyan
+    ]);
+    gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
 
     // Create an index buffer object (IBO) for the cube
     var ibo = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
     var indices = new Uint16Array([
-      0, 1, 2, 2, 3, 0,
-      4, 5, 6, 6, 7, 4,
-      0, 4, 5, 5, 1, 0,
-      1, 5, 6, 6, 2, 1,
-      2, 6, 7, 7, 3, 2,
-      3, 7, 4, 4, 0, 3
+      0, 1, 2, 2, 3, 0, // Front face
+      4, 5, 6, 6, 7, 4, // Back face
+      0, 4, 5, 5, 1, 0, // Bottom face
+      1, 5, 6, 6, 2, 1, // Right face
+      2, 6, 7, 7, 3, 2, // Top face
+      3, 7, 4, 4, 0, 3  // Left face
     ]);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
 
     // Set up the camera and projection matrices
     var modelViewMatrix = mat4.create();
     var projectionMatrix = mat4.create();
-    mat4.ortho(projectionMatrix, -5, 5, -5, 5, -10, 10);
-    mat4.lookAt(modelViewMatrix, [0, 0, 5], [0, 0, 0], [0, 1, 0]);
 
-    // Set up the uniforms
+    // Set up the projection and model-view matrices for viewing from different sides
+    var viewMatrices = [
+      mat4.create(), // Front view
+      mat4.create(), // Top view
+      mat4.create()  // Side view
+    ];
+
+    // Set up the front view (default)
+    mat4.lookAt(viewMatrices[0], [0, 0, 5], [0, 0, 0], [0, 1, 0]);
+    mat4.ortho(projectionMatrix, -5, 5, -5, 5, -10, 10);
+
+    // Set up the top view
+    mat4.lookAt(viewMatrices[1], [0, 5, 0], [0, 0, 0], [0, 0, -1]);
+
+    // Set up the side view
+    mat4.lookAt(viewMatrices[2], [5, 0, 0], [0, 0, 0], [0, 1, 0]);
+
+    // Set up the uniforms for the default view
     var uModelViewMatrix = gl.getUniformLocation(program, 'uModelViewMatrix');
     var uProjectionMatrix = gl.getUniformLocation(program, 'uProjectionMatrix');
-    gl.uniformMatrix4fv(uModelViewMatrix, false, modelViewMatrix);
     gl.uniformMatrix4fv(uProjectionMatrix, false, projectionMatrix);
 
-    // Draw the cube
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	gl.enableVertexAttribArray(0);
-	gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);	
-    gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+    // Set up vertex attributes
+    var aPositionLocation = gl.getAttribLocation(program, 'aPosition');
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+    gl.vertexAttribPointer(aPositionLocation, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(aPositionLocation);
+
+    var aColorLocation = gl.getAttribLocation(program, 'aColor');
+    gl.bindBuffer(gl.ARRAY_BUFFER, cbo);
+    gl.vertexAttribPointer(aColorLocation, 3, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(aColorLocation);
+
+    // Draw the cube for each view
+    for (var i = 0; i < 3; i++) {
+      gl.uniformMatrix4fv(uModelViewMatrix, false, viewMatrices[i]);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+      gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+    }
 
     function createShader(gl, type, source) {
       var shader = gl.createShader(type);
