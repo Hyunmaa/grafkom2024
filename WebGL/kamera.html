@@ -40,7 +40,20 @@
       precision mediump float;
       out vec4 fragColor;
       void main() {
-        fragColor = vec4(1.0, 0.0, 0.0, 1.0); // Red color
+        int faceIndex = int(gl_FragCoord.z) % 6; // Menggunakan koordinat z sebagai penentu indeks sisi
+        if (faceIndex == 0) {
+            fragColor = vec4(1.0, 0.0, 0.0, 1.0); // Red color
+        } else if (faceIndex == 1) {
+            fragColor = vec4(0.0, 1.0, 0.0, 1.0); // Green color
+        } else if (faceIndex == 2) {
+            fragColor = vec4(0.0, 0.0, 1.0, 1.0); // Blue color
+        } else if (faceIndex == 3) {
+            fragColor = vec4(1.0, 1.0, 0.0, 1.0); // Yellow color
+        } else if (faceIndex == 4) {
+            fragColor = vec4(1.0, 0.0, 1.0, 1.0); // Magenta color
+        } else {
+            fragColor = vec4(0.0, 1.0, 1.0, 1.0); // Cyan color
+        }
       }
     `));
     gl.linkProgram(program);
@@ -77,8 +90,8 @@
     // Set up the camera and projection matrices
     var modelViewMatrix = mat4.create();
     var projectionMatrix = mat4.create();
-    mat4.ortho(projectionMatrix, -5, 5, -5, 5, -10, 10);
-    mat4.lookAt(modelViewMatrix, [0, 0, 5], [0, 0, 0], [0, 1, 0]);
+    mat4.perspective(projectionMatrix, Math.PI / 3, canvas.width / canvas.height, 0.1, 100); // Menggunakan matriks proyeksi perspektif
+    mat4.lookAt(modelViewMatrix, [5, 5, 5], [0, 0, 0], [0, 1, 0]); // Posisi kamera diperbarui
 
     // Set up the uniforms
     var uModelViewMatrix = gl.getUniformLocation(program, 'uModelViewMatrix');
@@ -88,8 +101,10 @@
 
     // Draw the cube
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	gl.enableVertexAttribArray(0);
-	gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);	
+    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+    gl.enableVertexAttribArray(0);
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
     gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
 
     function createShader(gl, type, source) {
