@@ -21,52 +21,6 @@ loader.load("models/wooden_table/wooden_table_02_4k.gltf", function (gltf) {
   obj1.castShadow = true;
 });
 
-loader.load("models/fan/ceiling_fan_new.glb", function (gltf2) {
-  obj2 = gltf2.scene;
-  gltf2.scene.scale.set(1, 1, 1);
-  scene.add(gltf2.scene);
-  obj2.position.set(7.5, 5, -7.5);
-});
-
-loader.load(
-  "models/fan/ceiling_fan_new.glb",
-  function (gltf3) {
-    obj3 = gltf3.scene;
-    gltf3.scene.scale.set(1, 1, 1);
-    scene.add(gltf3.scene);
-    obj3.position.set(-7.5, 5, -7.5);
-    obj3.traverse(function (child) {
-      if (child) {
-        child.receiveShadow = true;
-      }
-    });
-  },
-  undefined,
-  function (error) {
-    console.error(error);
-  }
-);
-
-loader.load(
-  "models/couchset/scene.gltf",
-  function (gltf) {
-    sofa = gltf.scene;
-    gltf.scene.scale.set(50, 50, 50);
-    scene.add(gltf.scene);
-    sofa.position.set(-5, 0, 0);
-    sofa.rotateOnAxis(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
-    sofa.traverse(function (child) {
-      if (child) {
-        child.receiveShadow = true;
-      }
-    });
-  },
-  undefined,
-  function (error) {
-    console.error(error);
-  }
-);
-
 loader.load(
   "models/tv.glb",
   function (gltf) {
@@ -75,22 +29,6 @@ loader.load(
     scene.add(gltf.scene);
     tv.position.set(-13, 1.5, 0);
     tv.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI / 2); //memutar object
-  },
-  undefined,
-  function (error) {
-    console.error(error);
-  }
-);
-
-let mejakopi;
-loader.load(
-  "models/coffeetable/scene.gltf",
-  function (gltf) {
-    mejakopi = gltf.scene;
-    gltf.scene.scale.set(2, 1.5, 2);
-    scene.add(gltf.scene);
-    mejakopi.position.set(-7, 0, 0);
-    mejakopi.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI / 2); //memutar object
   },
   undefined,
   function (error) {
@@ -127,25 +65,6 @@ loader.load(
   }
 );
 
-let mixer, mixer2;
-loader.load(
-  "models/plant/scene.gltf",
-  function (gltf) {
-    plant = gltf.scene;
-    gltf.scene.scale.set(0.8, 0.8, 0.8);
-    scene.add(gltf.scene);
-    plant.position.set(-13, 0, 4);
-    plant.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI / 2);
-
-    mixer2 = new THREE.AnimationMixer(plant);
-    mixer2.clipAction(gltf.animations[0]).play();
-  },
-  undefined,
-  function (error) {
-    console.error(error);
-  }
-);
-
 loader.load(
   "models/cleaner/scene.gltf",
   function (gltf) {
@@ -174,96 +93,7 @@ loader.load("models/refrigerator/scene.gltf", function (gltf) {
   gltf.scene.scale.set(2, 2, 2);
   scene.add(gltf.scene);
   kulkas.position.set(-2, 0, -13);
-  // kulkas.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI / 2);
-});
-
-let rak;
-loader.load("models/shelf/scene.gltf", function (gltf) {
-  rak = gltf.scene;
-  gltf.scene.scale.set(2.2, 2.2, 2.2);
-  scene.add(gltf.scene);
-  rak.position.set(14.5, 0, 7);
-  rak.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI / 2);
-});
-
-let meja;
-loader.load("models/desk/scene.gltf", function (gltf) {
-  meja = gltf.scene;
-  gltf.scene.scale.set(4, 3, 2);
-  scene.add(gltf.scene);
-  meja.position.set(14.5, 0, -2);
-  meja.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI / 2);
-});
-
-let printer;
-loader.load("models/printer/scene.gltf", function (gltf) {
-  printer = gltf.scene;
-  gltf.scene.scale.set(0.4, 0.4, 0.4);
-  scene.add(gltf.scene);
-  printer.position.set(14, 1, -2);
-  printer.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI);
-});
-
-let piano;
-loader.load("models/grand_piano/scene.gltf", function (gltf) {
-  piano = gltf.scene;
-  gltf.scene.scale.set(0.12, 0.12, 0.12);
-  scene.add(gltf.scene);
-  piano.position.set(11, 2, -11);
-  piano.rotateOnAxis(new THREE.Vector3(0, 1, 0), -Math.PI / 4);
-});
-
-// let dispenser;
-// loader.load("models/dispenser/scene.gltf", function (gltf) {
-//   dispenser = gltf.scene;
-//   gltf.scene.scale.set(2.5, 2.5, 2.5);
-//   scene.add(gltf.scene);
-//   dispenser.position.set(-4, 0, -13.5);
-// });
-
-let dispenser;
-loader.load("models/water_dispenser.glb", function (gltf) {
-  dispenser = gltf.scene;
-  gltf.scene.scale.set(0.5, 0.5, 0.5);
-  scene.add(gltf.scene);
-  dispenser.position.set(-4, 3.3, -14);
-  dispenser.rotateOnAxis(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
-
-});
-
-let billiard;
-loader.load("models/bumper_billiard.glb", function (gltf) {
-  billiard = gltf.scene;
-  gltf.scene.scale.set(3, 2, 3);
-  scene.add(gltf.scene);
-  billiard.position.set(-7.5, 0, -9.5);
-});
-
-let grandclock;
-loader.load("models/grandfather_clock/scene.gltf", function (gltf) {
-  grandclock = gltf.scene;
-  gltf.scene.scale.set(2.2, 2, 2.2);
-  scene.add(gltf.scene);
-  grandclock.position.set(0, 0, 14.3);
-  grandclock.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI);
-});
-
-let painting;
-loader.load("models/decoration/scene.gltf", function (gltf) {
-  painting = gltf.scene;
-  gltf.scene.scale.set(3.5, 3.5, 3.5);
-  scene.add(gltf.scene);
-  painting.position.set(4, 2, 15);
-  painting.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI / 2);
-});
-
-let painting2;
-loader.load("models/painting2/scene.gltf", function (gltf) {
-  painting2 = gltf.scene;
-  gltf.scene.scale.set(2, 2, 2);
-  scene.add(gltf.scene);
-  painting2.position.set(-4, 3, 15);
-  painting2.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI);
+  kulkas.rotateOnAxis(new THREE.Vector3(0, 1, 0), Math.PI / 2);
 });
 
 const scene = new THREE.Scene();
